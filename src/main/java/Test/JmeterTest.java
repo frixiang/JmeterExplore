@@ -4,8 +4,7 @@ import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.AbstractJavaSamplerClient;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.apache.jmeter.samplers.SampleResult;
-import org.apache.jorphan.logging.LoggingManager;
-import org.apache.log.Logger;
+
 
 /**
  * Created by WIN7 on 2017/11/6.
@@ -13,7 +12,16 @@ import org.apache.log.Logger;
  */
 public class JmeterTest extends AbstractJavaSamplerClient {
 
-    private static final Logger log = LoggingManager.getLoggerForClass();
+    /**
+     *
+     * 注：必须重写getLogger方法才能打印出日志
+     * @return
+     */
+    @Override
+    public org.apache.log.Logger getLogger()
+    {
+        return super.getLogger();
+    }
 
     /**
      * 开始测试
@@ -30,15 +38,18 @@ public class JmeterTest extends AbstractJavaSamplerClient {
         sampleResult.sampleStart();
 
         try{
-            System.out.println("操作人："+operator);
+            this.getLogger().debug("--------操作人："+operator+"--------");
             Thread.sleep(timeOut);
 
             sampleResult.setSuccessful(true);
         }catch (Exception e){
             sampleResult.setSuccessful(false);
-            log.debug(e.getMessage());
+            this.getLogger().debug(e.getMessage());
         }finally {
             sampleResult.sampleEnd();//结束测试
+            sampleResult.setResponseMessage("调用成功");
+            sampleResult.setResponseCode("OK");
+
         }
         return sampleResult;
     }
@@ -49,7 +60,8 @@ public class JmeterTest extends AbstractJavaSamplerClient {
      */
     @Override
     public void setupTest(JavaSamplerContext context) {
-        log.debug(this.getClass().getName() + ": setupTest ---> 测试初始化");
+        this.getLogger().debug("--------测试前的初始化工作--------");
+        this.getLogger().debug(this.getClass().getName() + ": setupTest");
     }
 
     /**
@@ -58,7 +70,8 @@ public class JmeterTest extends AbstractJavaSamplerClient {
      */
     @Override
     public void teardownTest(JavaSamplerContext context) {
-        log.debug(this.getClass().getName() + ": teardownTest -- 调用结束");
+        this.getLogger().debug("--------测试结束--------");
+        this.getLogger().debug(this.getClass().getName() + ": teardownTest");
     }
 
     /**
@@ -68,6 +81,7 @@ public class JmeterTest extends AbstractJavaSamplerClient {
     @Override
     public Arguments getDefaultParameters() {
         Arguments arguments = new Arguments();
+        this.getLogger().debug("--------设置请求参数--------");
         arguments.addArgument("operator","xiang");
         arguments.addArgument("timeOut","500");
         return arguments;
