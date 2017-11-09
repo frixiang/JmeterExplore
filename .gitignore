@@ -37,4 +37,4 @@ gen
 *.conf
 *.lst
 target/
-!pom.xml
+!/pom.xml
