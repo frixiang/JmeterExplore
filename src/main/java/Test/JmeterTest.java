@@ -49,7 +49,6 @@ public class JmeterTest extends AbstractJavaSamplerClient {
             sampleResult.sampleEnd();//结束测试
             sampleResult.setResponseMessage("调用成功");
             sampleResult.setResponseCode("OK");
-
         }
         return sampleResult;
     }
